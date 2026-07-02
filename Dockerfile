@@ -1,14 +1,16 @@
-# Base image with PyTorch + CUDA 12.1 + cuDNN 8 runtime
-FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
+# syntax=docker/dockerfile:1
+
+FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
-# Use a non-root user for security (optional)
-RUN useradd -ms /bin/bash appuser
-USER appuser
-WORKDIR /home/appuser
+RUN python -m pip install --upgrade pip \
+    && python -m pip install countess==0.1.26 \
+    && python -m pip check \
+    && countess_cmd --version
 
-# Install your tool from PyPI or any other way ...
-RUN pip install --no-cache-dir doclayout-yolo==0.0.4
+WORKDIR /work
 
+ENTRYPOINT []
